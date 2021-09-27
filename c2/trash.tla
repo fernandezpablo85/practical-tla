@@ -34,22 +34,19 @@ Process ==
     (**************************************************************************************)
     /\ LET it == Head(items) IN
         /\ items' = Tail(items)
-        /\ IF it.type = "recycle" /\ it.size < capacity.recycle THEN
-            /\ PutIn("recycle", it)
-            ELSE
-            /\ IF it.size < capacity.trash THEN
-                /\ PutIn("trash", it)
-                ELSE
-                /\ UNCHANGED << bins, count, capacity >>
+        /\ IF it.type = "recycle" /\ it.size < capacity.recycle
+            THEN /\ PutIn("recycle", it)
+            ELSE IF it.size < capacity.trash
+                THEN /\ PutIn("trash", it)
+                ELSE /\ UNCHANGED << bins, count, capacity >>
 
 ProcessAll ==
     /\ pc = "init"
-    /\ IF items # <<>> THEN
-        /\ Process
-        /\ UNCHANGED << pc, item >>
-        ELSE
-        /\ pc'= "done"
-        /\ UNCHANGED << capacity, bins, count, items, item >>
+    /\ IF items # <<>>
+        THEN /\ Process
+             /\ UNCHANGED << pc, item >>
+        ELSE /\ pc'= "done"
+             /\ UNCHANGED << capacity, bins, count, items, item >>
 
 Done ==
     /\ pc = "done"
