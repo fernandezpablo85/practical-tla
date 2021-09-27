@@ -7,4 +7,8 @@ written in pure TLA+ (not pluscal)
 
 # Chapters
 
-* [One](./c1/): An Example (wire transfers)
+* [One](./c1/)
+  * wire transfers
+* [Two](./c2/)
+  * recycler
+  * telephone
