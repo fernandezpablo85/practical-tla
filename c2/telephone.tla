@@ -1,5 +1,5 @@
 ---- MODULE telephone ----
-EXTENDS TLC, Sequences
+EXTENDS TLC, Sequences, Integers
 
 VARIABLES
     to_send,
@@ -53,7 +53,9 @@ Process ==
         ELSE \/ Send
              \/ Receive
 
-Done == pc = "done" /\ UNCHANGED vars
+Done ==
+    /\ pc = "done"
+    /\ UNCHANGED vars
 
 Next == Process \/ Done
 
