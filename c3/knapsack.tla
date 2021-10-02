@@ -1,5 +1,5 @@
 ---- MODULE knapsack ----
-EXTENDS TLC, Integers, Sequences
+EXTENDS TLC, Integers, Sequences, Naturals
 
 (*****************************************************************************************)
 (* We have a knapsack of volume N and a set of items. Each item has a value and a size.  *)
@@ -7,13 +7,19 @@ EXTENDS TLC, Integers, Sequences
 (* less than the capacity of the sack. What’s the most valuable knapsack you can make?   *)
 (*****************************************************************************************)
 
+CONSTANTS
+    Capacity,
+    Items,
+    Sizes,
+    Values
+
+ASSUME Capacity \in Nat \ {0}
+ASSUME Sizes \subseteq 1..Capacity
+ASSUME \A v \in Values: v \in Nat
+
 VARIABLES pc, chosen
 
-Capacity == 4
-
-Items == {"a", "b", "c"}
-
-ItemParams == [size: 1..4, value: 0..5]
+ItemParams == [size: Sizes, value: Values]
 
 ItemSets == [Items -> ItemParams]
 
