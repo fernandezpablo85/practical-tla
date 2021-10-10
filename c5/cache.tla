@@ -35,9 +35,9 @@ CheckConsume(actor) ==
     (* set up as reday for consumption                                         *)
     (***************************************************************************)
     /\ pc[actor] = "init"
-    /\ resources_left - reserved >= resources_needed[actor]
+    /\ resources_left >= resources_needed[actor] + reserved
     /\ reserved' = reserved + resources_needed[actor]
-    /\ pc' = [pc EXCEPT ![actor] = "ready"]
+    /\ pc' = [pc EXCEPT ![actor] = "working"]
     /\ UNCHANGED << resources_left, resources_needed >>
 
 
@@ -45,15 +45,21 @@ Consume(actor) ==
     (******************************************************************************)
     (* Given that there are enough reserved resources, consume them one at a time *)
     (******************************************************************************)
-    /\ pc[actor] = "ready"
-    /\ IF resources_needed[actor] > 0
-        THEN /\ resources_left' = resources_left - 1
-             /\ resources_needed' = [resources_needed EXCEPT ![actor] = resources_needed[actor] - 1]
-             /\ reserved' = reserved - 1
-             /\ UNCHANGED << pc >>
-        ELSE /\ \E x \in 1..MaxConsumerCap: resources_needed' = [resources_needed EXCEPT ![actor] = x]
-             /\ pc' = [pc EXCEPT ![actor] = "init"]
-             /\ UNCHANGED << resources_left, reserved >>
+    /\ pc[actor] = "working"
+    /\ resources_needed[actor] > 0
+    /\ resources_left' = resources_left - 1
+    /\ resources_needed' = [resources_needed EXCEPT ![actor] = resources_needed[actor] - 1]
+    /\ reserved' = reserved - 1
+    /\ UNCHANGED << pc >>
+
+
+RebootConsumer(actor) ==
+    /\ pc[actor] = "working"
+    /\ resources_needed[actor] = 0
+    /\ \E x \in 1..MaxConsumerCap: resources_needed' = [resources_needed EXCEPT ![actor] = x]
+    /\ pc' = [pc EXCEPT ![actor] = "init"]
+    /\ UNCHANGED << resources_left, reserved >>
+
 
 
 Refill(time) ==
@@ -69,15 +75,16 @@ Refill(time) ==
 
 
 Next ==
-    \/ \E actor \in Actors: Consume(actor) \/ CheckConsume(actor)
+    \/ \E actor \in Actors: Consume(actor) \/ CheckConsume(actor) \/ RebootConsumer(actor)
     \/ \E timer \in Time: Refill(timer)
 
 
 Spec ==
     /\ Init
     /\ [][Next]_vars
-    /\ \E actor \in Actors: WF_vars(Consume(actor))
-    /\ \E actor \in Actors: WF_vars(CheckConsume(actor))
+    /\ \A timer \in Time: WF_vars(Refill(timer))
+    /\ \A actor \in Actors: WF_vars(Consume(actor))
+    /\ \A actor \in Actors: WF_vars(CheckConsume(actor))
 
 ----
 
@@ -85,7 +92,9 @@ Spec ==
 NoZeroResources == resources_left >= 0
 
 
-EventuallyRefills == \E n \in 1..ResourceCap: (reserved = n ) ~> (reserved > n)
+EventuallyRefills == \E n \in 1..ResourceCap: (resources_left = n)  ~> (resources_left > n)
+
+EventuallyItsConsumed == <>(resources_left < ResourceCap)
 
 
 ====
