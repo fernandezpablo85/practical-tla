@@ -17,11 +17,6 @@ VARIABLES
 vars == << queue, pc, current_message >>
 
 
-AddToQueue(msg) ==
-    /\ Len(queue) < MaxQueueSize
-    /\ queue' = Append(queue, msg)
-
-
 Init ==
     /\ queue = <<>>
     /\ current_message = [it \in Readers |-> "none"]
@@ -30,7 +25,8 @@ Init ==
 
 Write ==
     /\ pc["writer"] = "ready"
-    /\ AddToQueue("msg")
+    /\ Len(queue) < MaxQueueSize
+    /\ queue' = Append(queue, "msg")
     /\ UNCHANGED << current_message, pc >>
 
 
