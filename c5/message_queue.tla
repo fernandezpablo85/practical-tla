@@ -19,8 +19,8 @@ vars == << queue, pc, current_message >>
 
 Init ==
     /\ queue = <<>>
-    /\ current_message = [it \in Readers |-> "none"]
-    /\ pc = [it \in {"writer"} \cup Readers |-> "ready"]
+    /\ current_message \in [Readers -> {"none"}]
+    /\ pc \in [{"writer"} \union Readers -> {"ready"}]
 
 
 Write ==
