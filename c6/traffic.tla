@@ -33,6 +33,8 @@ Spec ==
     /\ SF_vars(CarMoves)
 
 ----
-CarRuns == <>(at_light = FALSE)
+CarRuns == <>[](at_light = FALSE)
+
+EventuallyGreen == <>[](light = "green")
 
 ====
