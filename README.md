@@ -24,3 +24,8 @@ written in pure TLA+ (not PlusCal)
   * message queue (writer / readers)
   * cache
 
+* [Six](./c6/)
+  * traffic lights
+  * Dekker's Algorithm for mutual exclusion
+  * Dekker's Algorithm for mutual exclusion V2 (written from Wikipedia's pseudocode)
+  * Peterson's Algorithm for mutual exclusion
