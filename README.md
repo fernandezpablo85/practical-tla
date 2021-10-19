@@ -29,3 +29,8 @@ written in pure TLA+ (not PlusCal)
   * Dekker's Algorithm for mutual exclusion
   * Dekker's Algorithm for mutual exclusion V2 (written from Wikipedia's pseudocode)
   * Peterson's Algorithm for mutual exclusion
+
+* [Seven](./c7)
+  * find max number from seq
+  * leftpad
+  * linear (non-binary) search
